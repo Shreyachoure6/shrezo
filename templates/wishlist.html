@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block title %}My Wishlist - SHREZO{% endblock %}
+
+{% block content %}
+<main>
+    <div class="category-page-header">
+        <a href="{{ url_for('home') }}" class="back-link">⬅ Back to Shopping</a>
+        <h2>❤️ My Wishlist</h2>
+    </div>
+
+    {% if products|length == 0 %}
+        <p class="no-products">Your wishlist is empty. Start adding products you love!</p>
+    {% else %}
+        <div class="product-grid">
+            {% for product in products %}
+            <div class="product-card">
+                <a href="{{ url_for('product_detail', product_id=product.id) }}" class="product-link">
+                    <img src="{{ product.image }}" alt="{{ product.name }}">
+                    {% if product.discount > 0 %}
+                        <span class="badge">{{ product.discount }}% OFF</span>
+                    {% endif %}
+                    <h3>{{ product.name }}</h3>
+                    <p class="description">{{ product.description }}</p>
+                    <div class="price-row">
+                        {% if product.discount > 0 %}
+                            <span class="original-price">₹{{ product.price }}</span>
+                        {% endif %}
+                        <span class="final-price">₹{{ product.final_price }}</span>
+                    </div>
+                </a>
+                <div class="wishlist-card-actions">
+                    <a href="{{ url_for('add_to_cart', product_id=product.id) }}" class="btn">Add to Cart</a>
+                    <a href="{{ url_for('toggle_wishlist', product_id=product.id) }}" class="wishlist-remove">✕</a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+</main>
+{% endblock %}

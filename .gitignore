@@ -1,0 +1,8 @@
+__pycache__/
+*.pyc
+venv/
+myvenv/
+.env
+db.py
+shop.db
+.vscode/

@@ -1,0 +1,201 @@
+{% extends "base.html" %}
+
+{% block title %}SHREZO - Shop. Tap. Delivered.{% endblock %}
+
+{% block content %}
+<main>
+
+<section class="hero-banner">
+    <img src="{{ url_for('static', filename='images/hero-flatlay.png') }}" alt="Everyday essentials" class="hero-image">
+    <div class="hero-overlay"></div>
+    <div class="hero-content">
+        <p class="hero-eyebrow">Quality · Style · Everyday</p>
+        <h1>Better Products for a Brighter You</h1>
+        <p class="hero-tagline">Premium essentials for your home, travel, style and more.</p>
+        <a href="#categories" class="btn hero-cta">Shop Now</a>
+    </div>
+</section>
+
+    <section class="offers-banner">
+    <div class="offer-card">
+    <div class="offer-icon-badge"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fe4f01" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 12 20 22 4 22 4 12"></polyline><rect x="2" y="7" width="20" height="5"></rect><line x1="12" y1="22" x2="12" y2="7"></line><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"></path><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"></path></svg></div>
+    <div>
+        <h3>Flat 20% OFF</h3>
+        <p>On your first order</p>
+    </div>
+</div>
+    <div class="offer-card">
+    <div class="offer-icon-badge"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fe4f01" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13"></rect><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon><circle cx="5.5" cy="18.5" r="2.5"></circle><circle cx="18.5" cy="18.5" r="2.5"></circle></svg></div>
+    <div>
+        <h3>Free Delivery</h3>
+        <p>On orders above ₹499</p>
+    </div>
+</div>
+    <div class="offer-card">
+    <div class="offer-icon-badge"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fe4f01" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line></svg></div>
+    <div>
+        <h3>10% Cashback</h3>
+        <p>On UPI payments</p>
+    </div>
+</div>
+    </section>
+
+    <section class="category-section" id="categories">
+        <h2 class="section-title">Shop by Category</h2>
+        <div class="category-grid">
+            {% for category in categories %}
+            <a href="{{ url_for('category_page', category_name=category.name) }}" class="category-card">
+                <div class="category-icon">{{ category.icon |safe }}</div>
+                <p>{{ category.display_name }}</p>
+            </a>
+            {% endfor %}
+        </div>
+    </section>
+
+    <section class="flash-deals-section">
+    <div class="section-header">
+        <div class="section-icon-badge">
+            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fe4f01" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
+        </div>
+        <div>
+            <h2 class="section-title">Flash Deals</h2>
+            <p class="section-subtitle">Grab these before they're gone</p>
+        </div>
+    </div>
+        <div class="flash-deals-scroll">
+        {% for product in flash_deals %}
+<div class="deal-card-outer">
+    <a href="{{ url_for('product_detail', product_id=product.id) }}" class="deal-card">
+        <div class="deal-badge">{{ product.discount }}% OFF</div>
+        <img src="{{ product.image }}" alt="{{ product.name }}">
+        <h4>{{ product.name }}</h4>
+        <div class="deal-price-row">
+            <span class="original-price">₹{{ product.price }}</span>
+            <span class="final-price">₹{{ product.final_price }}</span>
+        </div>
+    </a>
+    {% set qty = cart_quantities.get(product.id|string, 0) %}
+    {% if qty > 0 %}
+    <div class="qty-stepper">
+        <a href="{{ url_for('decrease_quantity', product_id=product.id) }}" class="qty-btn">−</a>
+        <span class="qty-count">{{ qty }}</span>
+        <a href="{{ url_for('add_to_cart', product_id=product.id) }}" class="qty-btn">+</a>
+    </div>
+    {% else %}
+    <a href="{{ url_for('add_to_cart', product_id=product.id) }}" class="btn">Add to Cart</a>
+    {% endif %}
+</div>
+{% endfor %}
+        </div>
+    </section>
+
+    <section class="best-sellers-section">
+    <div class="section-header">
+        <div class="section-icon-badge">
+            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="#fe4f01" stroke="#fe4f01" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+        </div>
+        <div>
+            <h2 class="section-title">Best Sellers</h2>
+            <p class="section-subtitle">Loved by thousands of customers</p>
+        </div>
+    </div>
+                <div class="bestseller-grid">
+            {% for product in best_sellers %}
+            <div class="bestseller-card-outer">
+                <a href="{{ url_for('product_detail', product_id=product.id) }}" class="bestseller-card">
+                    <img src="{{ product.image }}" alt="{{ product.name }}">
+                    <div class="bestseller-info">
+                        <h4>{{ product.name }}</h4>
+                        <div class="bestseller-rating"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="#ffb300" stroke="#ffb300" stroke-width="1"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg> {{ product.rating }} <span>({{ product.reviews_count }})</span></div>
+                        <span class="final-price">₹{{ product.final_price }}</span>
+                    </div>
+                </a>
+                {% set qty = cart_quantities.get(product.id|string, 0) %}
+                {% if qty > 0 %}
+                <div class="qty-stepper">
+                    <a href="{{ url_for('decrease_quantity', product_id=product.id) }}" class="qty-btn">−</a>
+                    <span class="qty-count">{{ qty }}</span>
+                    <a href="{{ url_for('add_to_cart', product_id=product.id) }}" class="qty-btn">+</a>
+                </div>
+                {% else %}
+                <a href="{{ url_for('add_to_cart', product_id=product.id) }}" class="btn">Add to Cart</a>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+    
+    <section class="why-section">
+    <div class="why-grid">
+        <div class="why-card">
+            <div class="why-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fe4f01" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg></div>
+            <div>
+                <h4>Lightning Fast Delivery</h4>
+                <p>Get your essentials in minutes, not days</p>
+            </div>
+        </div>
+        <div class="why-card">
+            <div class="why-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fe4f01" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg></div>
+            <div>
+                <h4>Secure Payments</h4>
+                <p>100% safe and encrypted transactions</p>
+            </div>
+        </div>
+        <div class="why-card">
+            <div class="why-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fe4f01" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"></polyline><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path></svg></div>
+            <div>
+                <h4>Easy Returns</h4>
+                <p>Hassle-free returns within 7 days</p>
+            </div>
+        </div>
+        <div class="why-card">
+            <div class="why-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fe4f01" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 18v-6a9 9 0 0 1 18 0v6"></path><path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"></path></svg></div>
+            <div>
+                <h4>24/7 Support</h4>
+                <p>We're here whenever you need help</p>
+            </div>
+        </div>
+    </div>
+</section>
+</main>
+<script>
+(function () {
+    // Rows that should glide on their own
+    var rows = document.querySelectorAll('.flash-deals-scroll, .bestseller-grid');
+    var SPEED = 0.4; // pixels per frame; lower = slower
+
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+    rows.forEach(function (row) {
+        var originals = Array.from(row.children);
+        if (originals.length < 2) return;
+
+        // Copy the cards once so the loop has no visible jump
+        originals.forEach(function (card) {
+            row.appendChild(card.cloneNode(true));
+        });
+
+        var firstClone = row.children[originals.length];
+        var period = firstClone.offsetLeft - originals[0].offsetLeft;
+
+        var pos = row.scrollLeft;
+        var paused = false;
+
+        row.addEventListener('mouseenter', function () { paused = true; });
+        row.addEventListener('mouseleave', function () { pos = row.scrollLeft; paused = false; });
+        row.addEventListener('touchstart', function () { paused = true; }, { passive: true });
+        row.addEventListener('touchend', function () { pos = row.scrollLeft; paused = false; });
+
+        function step() {
+            if (!paused) {
+                pos += SPEED;
+                if (pos >= period) pos -= period;
+                row.scrollLeft = pos;
+            }
+            requestAnimationFrame(step);
+        }
+        requestAnimationFrame(step);
+    });
+})();
+</script>
+{% endblock %}

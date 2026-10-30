@@ -1,0 +1,161 @@
+{% extends "base.html" %}
+
+{% block title %}{{ product.name }} - SHREZO{% endblock %}
+
+{% block content %}
+<main class="product-detail">
+
+    <a href="{{ url_for('category_page', category_name=product.category) }}" class="back-link">⬅ Back to {{ product.category }}</a>
+
+    <div class="detail-grid">
+
+        <!-- LEFT: Image gallery -->
+        <div class="gallery">
+            <div class="main-image-wrapper">
+                <button type="button" class="gallery-nav gallery-prev" onclick="changeGalleryImage(-1)">‹</button>
+                <img id="main-image" src="{{ product.images[0] }}" alt="{{ product.name }}" class="main-image">
+                <button type="button" class="gallery-nav gallery-next" onclick="changeGalleryImage(1)">›</button>
+            </div>
+            <div class="thumbnail-row">
+                {% for img in product.images %}
+                    <img src="{{ img }}"
+                         class="thumbnail {% if loop.index0 == 0 %}thumbnail-active{% endif %}"
+                         onclick="setGalleryImage({{ loop.index0 }})">
+                {% endfor %}
+            </div>
+        </div>
+
+        <script>
+            const galleryImages = {{ product.images | tojson }};
+            let currentImageIndex = 0;
+
+            function setGalleryImage(index) {
+                currentImageIndex = index;
+                document.getElementById('main-image').src = galleryImages[currentImageIndex];
+                document.querySelectorAll('.thumbnail').forEach((thumb, i) => {
+                    thumb.classList.toggle('thumbnail-active', i === currentImageIndex);
+                });
+            }
+
+            function changeGalleryImage(direction) {
+                currentImageIndex = (currentImageIndex + direction + galleryImages.length) % galleryImages.length;
+                setGalleryImage(currentImageIndex);
+            }
+
+            function selectColor(btn) {
+                document.querySelectorAll('.color-swatch').forEach(function (b) {
+                    b.classList.remove('active');
+                });
+                btn.classList.add('active');
+                document.getElementById('selected-color-name').textContent = btn.dataset.name;
+            }
+        </script>
+
+        <!-- RIGHT: Info -->
+        <div class="detail-info">
+            <p class="brand-tag">{{ product.brand }}</p>
+            <h2>{{ product.name }}</h2>
+
+            <div class="rating-row">
+                ⭐ {{ product.rating }} &nbsp;|&nbsp; {{ product.reviews_count }} reviews
+            </div>
+
+            <div class="price-block">
+                {% if product.discount > 0 %}
+                    <span class="original-price-lg">₹{{ product.price }}</span>
+                    <span class="badge">{{ product.discount }}% OFF</span>
+                {% endif %}
+                <div class="final-price-lg">₹{{ product.final_price }}</div>
+                {% if product.discount > 0 %}
+                    <p class="savings-text">You save ₹{{ product.savings }}</p>
+                {% endif %}
+            </div>
+
+            {% if product.stock > 0 %}
+                <p class="stock-status in-stock">✔ In stock ({{ product.stock }} available)</p>
+            {% else %}
+                <p class="stock-status out-stock">✘ Out of stock</p>
+            {% endif %}
+
+            <p class="long-description">{{ product.long_description }}</p>
+
+            {% if colors %}
+            <div class="color-picker">
+                <p class="color-label">Colour: <span id="selected-color-name">{{ colors[0].name }}</span></p>
+                <div class="color-options">
+                    {% for c in colors %}
+                    <button type="button" class="color-swatch {% if loop.first %}active{% endif %}" style="background: {{ c.hex }};" data-name="{{ c.name }}" onclick="selectColor(this)" title="{{ c.name }}" aria-label="{{ c.name }}"></button>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+
+            <div class="cart-wishlist-row">
+                {% set qty = cart_quantities.get(product.id|string, 0) %}
+                {% if qty > 0 %}
+                <div class="qty-stepper qty-stepper-lg">
+                    <a href="{{ url_for('decrease_quantity', product_id=product.id) }}" class="qty-btn">−</a>
+                    <span class="qty-count">{{ qty }}</span>
+                    <a href="{{ url_for('add_to_cart', product_id=product.id) }}?next=product" class="qty-btn">+</a>
+                </div>
+                {% else %}
+                <a href="{{ url_for('add_to_cart', product_id=product.id) }}?next=product" class="btn add-to-cart-lg">
+                    Add to Cart
+                </a>
+                {% endif %}
+                <a href="{{ url_for('toggle_wishlist', product_id=product.id) }}" class="wishlist-btn {% if in_wishlist %}wishlist-active{% endif %}">
+                    {% if in_wishlist %}❤️{% else %}🤍{% endif %}
+                </a>
+            </div>
+
+            <h3 class="specs-heading">Specifications</h3>
+            <table class="specs-table">
+                {% for key, value in product.specifications.items() %}
+                <tr>
+                    <td class="spec-key">{{ key }}</td>
+                    <td>{{ value }}</td>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+
+    </div>
+
+    <!-- Related products -->
+    {% if related_products %}
+    <section class="related-section">
+        <h3>You might also like</h3>
+        <div class="product-grid">
+            {% for related in related_products %}
+            <div class="product-card">
+                <a href="{{ url_for('product_detail', product_id=related.id) }}" class="product-link">
+                    <img src="{{ related.image }}" alt="{{ related.name }}">
+                    {% if related.discount > 0 %}
+                        <span class="badge">{{ related.discount }}% OFF</span>
+                    {% endif %}
+                    <h3>{{ related.name }}</h3>
+                    <div class="price-row">
+                        {% if related.discount > 0 %}
+                            <span class="original-price">₹{{ related.price }}</span>
+                        {% endif %}
+                        <span class="final-price">₹{{ related.final_price }}</span>
+                    </div>
+                </a>
+                {% set rel_qty = cart_quantities.get(related.id|string, 0) %}
+                {% if rel_qty > 0 %}
+                <div class="qty-stepper">
+                    <a href="{{ url_for('decrease_quantity', product_id=related.id) }}" class="qty-btn">−</a>
+                    <span class="qty-count">{{ rel_qty }}</span>
+                    <a href="{{ url_for('add_to_cart', product_id=related.id) }}" class="qty-btn">+</a>
+                </div>
+                {% else %}
+                <a href="{{ url_for('add_to_cart', product_id=related.id) }}" class="btn">Add to Cart</a>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+    {% endif %}
+
+</main>
+{% endblock %}

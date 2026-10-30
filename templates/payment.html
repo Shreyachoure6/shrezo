@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+
+{% block title %}Payment - SHREZO{% endblock %}
+
+{% block content %}
+<main class="checkout-page">
+    <a href="{{ url_for('address') }}" class="back-link">⬅ Back to Address</a>
+    <h2>Review & Pay</h2>
+
+    <div class="delivery-summary">
+        <h3>Delivering to</h3>
+        <p class="address-name">{{ address.full_name }} <span class="address-phone">{{ address.phone_number }}</span></p>
+        <p class="address-line">{{ address.address_line }}, {{ address.city }}, {{ address.state }} - {{ address.pincode }}</p>
+    </div>
+
+    <div class="order-summary">
+        <h3>Order Summary</h3>
+        {% for item in cart_items %}
+        <div class="summary-row">
+            <span>{{ item.product.name }} × {{ item.quantity }}</span>
+            <span>₹{{ item.subtotal }}</span>
+        </div>
+        {% endfor %}
+        <div class="summary-row summary-total">
+            <span>Total</span>
+            <span>₹{{ total }}</span>
+        </div>
+    </div>
+
+    <form method="POST" action="{{ url_for('payment', address_id=address.id) }}" class="payment-form">
+        <h3>Choose Payment Method</h3>
+
+        <label class="payment-option">
+            <input type="radio" name="payment_method" value="COD" checked>
+            <span class="payment-option-label">💵 Cash on Delivery</span>
+        </label>
+
+        <label class="payment-option">
+            <input type="radio" name="payment_method" value="UPI">
+            <span class="payment-option-label">📱 UPI</span>
+        </label>
+
+        <label class="payment-option">
+            <input type="radio" name="payment_method" value="Card">
+            <span class="payment-option-label">💳 Credit / Debit Card</span>
+        </label>
+
+        <p class="payment-note">This is a simulated checkout — no real payment will be processed.</p>
+
+        <button type="submit" class="btn btn-large">Place Order — ₹{{ total }}</button>
+    </form>
+</main>
+{% endblock %}

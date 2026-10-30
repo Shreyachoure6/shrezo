@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Dashboard - SHREZO{% endblock %}
+
+{% block search %}{% endblock %}
+
+{% block content %}
+<main class="admin-page">
+    <div class="admin-header-row">
+        <h2>Admin Dashboard</h2>
+        <a href="{{ url_for('admin_add_product') }}" class="btn admin-add-btn">+ Add Product</a>
+    </div>
+
+    <div class="admin-stats">
+        <a href="{{ url_for('admin_users') }}" class="stat-card stat-card-link">
+            <p class="stat-label">Total Users</p>
+            <h3 class="stat-value">{{ total_users }}</h3>
+        </a>
+        <div class="stat-card">
+            <p class="stat-label">Total Orders</p>
+            <h3 class="stat-value">{{ total_orders }}</h3>
+        </div>
+        <div class="stat-card">
+            <p class="stat-label">Total Revenue</p>
+            <h3 class="stat-value">₹{{ total_revenue }}</h3>
+        </div>
+    </div>
+
+    <h3 class="admin-section-title">All Orders</h3>
+
+    {% if all_orders|length == 0 %}
+        <p class="no-products">No orders placed yet.</p>
+    {% else %}
+        {% for order in all_orders %}
+        <div class="order-card">
+            <div class="order-card-header">
+                <div>
+                    <p class="order-id-label">Order #{{ order.id }}</p>
+                    <p class="order-date">{{ order.user_name }} ({{ order.user_email }}) — {{ order.placed_at[:10] }}</p>
+                </div>
+                <span class="order-status-badge">{{ order.status }}</span>
+            </div>
+
+            <div class="order-items-list">
+                {% for item in order.line_items %}
+                <div class="order-item-row">
+                    <span>{{ item.product_name }} × {{ item.quantity }}</span>
+                    <span>₹{{ item.price_at_purchase * item.quantity }}</span>
+                </div>
+                {% endfor %}
+            </div>
+
+            <div class="order-card-footer">
+                <span>Total</span>
+                <span class="order-total-amount">₹{{ order.total_amount }}</span>
+            </div>
+        </div>
+        {% endfor %}
+    {% endif %}
+</main>
+{% endblock %}

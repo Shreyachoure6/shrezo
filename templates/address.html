@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+
+{% block title %}Select Address - SHREZO{% endblock %}
+
+{% block content %}
+<main class="checkout-page">
+    <a href="{{ url_for('view_cart') }}" class="back-link">⬅ Back to Cart</a>
+    <h2>Delivery Address</h2>
+
+    {% if saved_addresses %}
+        <div class="saved-addresses">
+            <h3>Choose a saved address</h3>
+            {% for addr in saved_addresses %}
+            <a href="{{ url_for('payment', address_id=addr.id) }}" class="address-card">
+                <p class="address-name">{{ addr.full_name }} <span class="address-phone">{{ addr.phone_number }}</span></p>
+                <p class="address-line">{{ addr.address_line }}, {{ addr.city }}, {{ addr.state }} - {{ addr.pincode }}</p>
+            </a>
+            {% endfor %}
+        </div>
+        <div class="address-divider"><span>OR ADD A NEW ONE</span></div>
+    {% endif %}
+
+    <form method="POST" action="{{ url_for('address') }}" class="address-form">
+        <h3>Add a new address</h3>
+
+        <label>Full Name</label>
+        <input type="text" name="full_name" required>
+
+        <label>Phone Number</label>
+        <input type="tel" name="phone_number" pattern="[0-9]{10}" placeholder="10-digit mobile number" required>
+
+        <label>Address</label>
+        <textarea name="address_line" rows="3" placeholder="House no., street, area" required></textarea>
+
+        <div class="address-row">
+            <div>
+                <label>City</label>
+                <input type="text" name="city" required>
+            </div>
+            <div>
+                <label>State</label>
+                <input type="text" name="state" required>
+            </div>
+            <div>
+                <label>Pincode</label>
+                <input type="text" name="pincode" pattern="[0-9]{6}" required>
+            </div>
+        </div>
+
+        <button type="submit" class="btn btn-large">Save & Continue</button>
+    </form>
+</main>
+{% endblock %}

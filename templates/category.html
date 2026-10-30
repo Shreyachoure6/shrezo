@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% block title %}{{ display_name }} - SHREZO{% endblock %}
+
+{% block content %}
+<main>
+    <div class="category-page-header">
+        <a href="{{ url_for('home') }}" class="back-link">⬅ Back to Categories</a>
+        <h2>{{ display_name }}</h2>
+    </div>
+
+    {% if products|length == 0 %}
+        <p class="no-products">No products found in this category yet.</p>
+    {% else %}
+        <div class="product-grid">
+            {% for product in products %}
+            <div class="product-card">
+                <a href="{{ url_for('product_detail', product_id=product.id) }}" class="product-link">
+                    <img src="{{ product.image }}" alt="{{ product.name }}">
+                    {% if product.discount > 0 %}
+                        <span class="badge">{{ product.discount }}% OFF</span>
+                    {% endif %}
+                                        <a href="{{ url_for('toggle_wishlist', product_id=product.id) }}" class="card-wishlist-btn" onclick="event.stopPropagation()">
+                        {% if product.id in wishlist_ids %}❤️{% else %}🤍{% endif %}
+                    </a>
+                    <h3>{{ product.name }}</h3>
+                    <p class="description">{{ product.description }}</p>
+                    <div class="price-row">
+                        {% if product.discount > 0 %}
+                            <span class="original-price">₹{{ product.price }}</span>
+                        {% endif %}
+                        <span class="final-price">₹{{ product.final_price }}</span>
+                    </div>
+                </a>
+                {% set qty = cart_quantities.get(product.id|string, 0) %}
+{% if qty > 0 %}
+    <div class="qty-stepper">
+        <a href="{{ url_for('decrease_quantity', product_id=product.id) }}" class="qty-btn">−</a>
+        <span class="qty-count">{{ qty }}</span>
+    <a href="{{ url_for('add_to_cart', product_id=product.id) }}" class="qty-btn">+</a>
+    </div>
+{% else %}
+    <a href="{{ url_for('add_to_cart', product_id=product.id) }}" class="btn">Add to Cart</a>
+{% endif %}
+            </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+</main>
+{% endblock %}

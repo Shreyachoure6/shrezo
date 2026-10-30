@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+
+{% block title %}Add Product - SHREZO{% endblock %}
+
+{% block search %}{% endblock %}
+
+{% block content %}
+<main class="admin-page">
+    <a href="{{ url_for('admin_dashboard') }}" class="back-link">⬅ Back to Dashboard</a>
+    <h2>Add a New Product</h2>
+
+    <form method="POST" action="{{ url_for('admin_add_product') }}" class="address-form">
+
+        <label>Category</label>
+        <input type="text" name="category" list="category-suggestions" placeholder="Pick existing or type a new one" required>
+        <datalist id="category-suggestions">
+            {% for cat in existing_categories %}
+            <option value="{{ cat }}">
+            {% endfor %}
+        </datalist>
+        <p class="field-hint">Type a name not in the list to create a brand new category.</p>
+
+        <label>Product Name</label>
+        <input type="text" name="name" required>
+
+        <label>Brand</label>
+        <input type="text" name="brand" required>
+
+        <div class="address-row">
+            <div>
+                <label>Price (₹)</label>
+                <input type="number" name="price" step="0.01" min="0" required>
+            </div>
+            <div>
+                <label>Discount (%)</label>
+                <input type="number" name="discount" min="0" max="90" placeholder="0">
+            </div>
+            <div>
+                <label>Stock</label>
+                <input type="number" name="stock" min="0" required>
+            </div>
+        </div>
+
+        <label>Image URL</label>
+        <input type="text" name="image" placeholder="/static/images/products/.../photo.jpg or a full https:// link" required>
+
+        <label>Description</label>
+        <textarea name="description" rows="3" required></textarea>
+
+        <button type="submit" class="btn btn-large">Add Product</button>
+    </form>
+</main>
+{% endblock %}

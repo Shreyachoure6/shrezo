@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+{% block title %}My Orders - SHREZO{% endblock %}
+
+{% block content %}
+<main class="orders-page">
+    <a href="{{ url_for('home') }}" class="back-link">⬅ Back to Shopping</a>
+    <h2>My Orders</h2>
+
+    {% if orders|length == 0 %}
+        <p class="no-products">You haven't placed any orders yet.</p>
+    {% else %}
+        {% for order in orders %}
+        <div class="order-card">
+            <div class="order-card-header">
+                <div>
+                    <p class="order-id-label">Order #{{ order.id }}</p>
+                    <p class="order-date">{{ order.placed_at[:10] }}</p>
+                </div>
+                <span class="order-status-badge">{{ order.status }}</span>
+            </div>
+
+            <div class="order-items-list">
+                {% for item in order.line_items %}
+                <div class="order-item-row">
+                    <span>{{ item.product_name }} × {{ item.quantity }}</span>
+                    <span>₹{{ item.price_at_purchase * item.quantity }}</span>
+                </div>
+                {% endfor %}
+            </div>
+
+            <div class="order-card-footer">
+                <span>Total</span>
+                <span class="order-total-amount">₹{{ order.total_amount }}</span>
+            </div>
+        </div>
+        {% endfor %}
+    {% endif %}
+</main>
+{% endblock %}
