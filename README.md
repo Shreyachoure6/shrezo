@@ -1,50 +1,49 @@
-# ShopEase — Stage 1: Product Listing + Cart
+# SHREZO - E-commerce Web App
 
-This is the first working stage of your e-commerce project.
-It shows products on a homepage and lets you add/remove them from a cart.
+A full-stack e-commerce web application with 14 categories and 140+ products, built as a learning project.
 
-## What's included
-- `app.py` — Flask backend (routes, product data, cart logic)
-- `templates/index.html` — homepage (product grid)
-- `templates/cart.html` — cart page
-- `static/css/style.css` — all styling
+## Features
+- User signup, login, logout and password reset
+- Product listing, search and product detail pages with image galleries
+- Cart with quantity controls and wishlist
+- Checkout flow with address, payment simulation and order confirmation
+- Order history and admin dashboard
 
-## How to run it
+## Tech Stack
+- **Frontend:** HTML, CSS, JavaScript
+- **Backend:** Python (Flask), Jinja2
+- **Database:** MySQL
 
-1. Open a terminal in this folder.
-2. Install Flask:
-   ```
-   pip install -r requirements.txt
-   ```
-3. Run the app:
-   ```
-   python app.py
-   ```
-4. Open your browser and go to:
-   ```
-   http://127.0.0.1:5000
-   ```
+## Screenshots
 
-You should see 4 sample products. Click "Add to Cart", then click the cart icon
-top-right to see your cart with totals.
+### Home
+![Home](screenshots/home.png)
 
-## How it works (beginner explanation)
+### Category
+![Category](screenshots/category.png)
 
-- `PRODUCTS` in `app.py` is a Python list of dictionaries — this is your
-  "fake database" for now. Later we'll replace it with a real SQLite database.
-- The cart is stored in `session`, which is a way Flask remembers data
-  per-user between page loads (using a secure cookie). No database needed yet.
-- `render_template()` takes an HTML file from `templates/` and fills in
-  the `{{ ... }}` placeholders with real data — this is called Jinja2 templating.
+### Product Details
+![Product](screenshots/product.png)
 
-## Next steps (in order)
-1. ✅ Product listing + Add to cart (done — this stage)
-2. User signup/login (with password hashing)
-3. Forgot password (email reset)
-4. Save delivery address + estimated delivery time
-5. Wishlist
-6. Payment integration (Razorpay/Stripe test mode)
-7. Live delivery tracking (advanced — real-time GPS)
+### Cart
+![Cart](screenshots/cart.png)
 
-Come back and ask for the next stage whenever you're ready — we'll connect
-a real database (SQLite) around Stage 2, since login needs persistent storage.
+### Checkout
+![Checkout](screenshots/checkout.png)
+
+### Order Confirmation
+![Order Confirmation](screenshots/order_confirmed.png)
+
+### Admin Dashboard
+![Admin](screenshots/admin.png)
+
+## How to Run
+1. Clone the repository: `git clone https://github.com/Shreyachoure6/shrezo.git`
+2. Go into the folder: `cd shrezo`
+3. Install packages: `pip install -r requirements.txt`
+4. Create a `db.py` file with your MySQL connection details
+5. Run the app: `python app.py`
+6. Open `http://127.0.0.1:5000` in your browser
+
+## Author
+Shreya Choure
